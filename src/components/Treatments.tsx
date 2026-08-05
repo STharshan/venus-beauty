@@ -108,10 +108,18 @@ export const Treatments: React.FC<TreatmentsProps> = ({
                 </div>
 
                 {/* Footer Link */}
-                <div className="pt-2 border-t border-[#f2f0ea] flex items-center justify-between text-[10px] font-sans-clean font-semibold tracking-wider text-[#9b5d58] uppercase">
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onSelectTreatment(treatment);
+                  }}
+                  className="pt-2 border-t border-[#f2f0ea] flex items-center justify-between text-[10px] font-sans-clean font-semibold tracking-wider text-[#9b5d58] uppercase w-full text-left"
+                  aria-label={`Learn more about ${treatment.title}`}
+                >
                   <span className="group-hover:translate-x-0.5 transition-transform">LEARN MORE</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </div>
+                </button>
               </div>
             </div>
           ))}

@@ -16,11 +16,16 @@ export const TreatmentDetailModal: React.FC<TreatmentDetailModalProps> = ({
   if (!treatment) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-[#ead8d1] my-8">
+    <div
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="treatment-detail-title"
+    >
+      <div className="relative w-full max-w-3xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2rem)] bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-[#ead8d1] flex flex-col my-2 sm:my-4">
         
         {/* Header Image */}
-        <div className="relative h-60 sm:h-72 bg-[#f2e2dc]">
+        <div className="relative h-48 sm:h-64 md:h-72 bg-[#f2e2dc] shrink-0">
           <img
             src={treatment.image}
             alt={treatment.title}
@@ -32,7 +37,8 @@ export const TreatmentDetailModal: React.FC<TreatmentDetailModalProps> = ({
           {/* Close button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/50 hover:bg-black text-white flex items-center justify-center transition-colors"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 w-10 h-10 rounded-full bg-black/55 hover:bg-black text-white flex items-center justify-center transition-colors shadow-lg backdrop-blur-sm"
+            aria-label="Close treatment details"
           >
             <X className="w-5 h-5" />
           </button>
@@ -42,14 +48,14 @@ export const TreatmentDetailModal: React.FC<TreatmentDetailModalProps> = ({
             <span className="text-[10px] font-sans-clean font-semibold tracking-widest text-[#e3cfc9] uppercase block mb-1">
               {treatment.subtitle || 'MEDICAL AESTHETIC TREATMENT'}
             </span>
-            <h2 className="font-serif-luxury text-3xl sm:text-4xl font-normal">
+            <h2 id="treatment-detail-title" className="font-serif-luxury text-2xl sm:text-3xl md:text-4xl font-normal leading-tight">
               {treatment.title}
             </h2>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 sm:p-8 space-y-6">
+        <div className="p-5 sm:p-6 md:p-8 space-y-6 overflow-y-auto">
           
           {/* Quick Specs Pill Row */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#fbf6f4] border border-[#f1e5e0]">
