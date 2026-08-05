@@ -1,0 +1,6 @@
+{
+  "name": "Venus Beauty Aesthetics",
+  "description": "Modern luxury medical aesthetics clinic website featuring expert skin treatments, before/after transformations, skin concern advisor, and online consultation booking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
