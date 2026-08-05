@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ArrowRight, SlidersHorizontal, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, SlidersHorizontal } from 'lucide-react';
 import { BEFORE_AFTER_RESULTS } from '../data/clinicData';
 
 interface TransformationsProps {
@@ -9,9 +9,12 @@ interface TransformationsProps {
 export const Transformations: React.FC<TransformationsProps> = ({ onBookClick }) => {
   const [activeResultIndex, setActiveResultIndex] = useState(0);
   const [sliderPosition, setSliderPosition] = useState(50); // percentage 0-100
-  const [viewMode, setViewMode] = useState<'slider' | 'sideBySide'>('slider');
 
   const currentResult = BEFORE_AFTER_RESULTS[activeResultIndex];
+  const rotatedResults = [
+    ...BEFORE_AFTER_RESULTS.slice(activeResultIndex),
+    ...BEFORE_AFTER_RESULTS.slice(0, activeResultIndex),
+  ];
 
   const handleNext = () => {
     setActiveResultIndex((prev) => (prev + 1) % BEFORE_AFTER_RESULTS.length);
@@ -65,72 +68,97 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
           </div>
         </div>
 
-        {/* Results Cards Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
-          {BEFORE_AFTER_RESULTS.map((item, index) => {
-            const isActive = index === activeResultIndex;
-            return (
-              <div
-                key={item.id}
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-                onClick={() => setActiveResultIndex(index)}
-                className={`bg-white rounded-2xl p-5 border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
-                  isActive
-                    ? 'border-[#9b5d58] shadow-xl ring-1 ring-[#9b5d58]/20'
-                    : 'border-[#f1e5e0] hover:border-[#c7b3ad] shadow-sm'
-                }`}
-              >
-                {/* Before / After Images */}
-                <div className="space-y-3">
-                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#f2e2dc] grid grid-cols-2 gap-1 p-1 bg-[#f1e5e0]">
-                    {/* Before Half */}
-                    <div className="relative rounded-lg overflow-hidden h-full">
-                      <img
-                        src={item.beforeImage}
-                        alt={`${item.treatmentName} Before`}
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                      <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
-                        BEFORE
-                      </span>
+        {/* Results Cards */}
+        <div className="relative mb-12" data-aos="fade-up">
+          <div className="absolute inset-y-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-between pointer-events-none z-20 px-0 sm:px-2">
+            <button
+              onClick={handlePrev}
+              className="pointer-events-auto -ml-2 sm:ml-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-[#e3cfc9] bg-white/95 backdrop-blur-sm text-[#9b5d58] shadow-lg flex items-center justify-center transition-all hover:bg-[#9b5d58] hover:text-white hover:scale-105"
+              aria-label="Previous result"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+
+            <button
+              onClick={handleNext}
+              className="pointer-events-auto -mr-2 sm:mr-0 w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-[#e3cfc9] bg-white/95 backdrop-blur-sm text-[#9b5d58] shadow-lg flex items-center justify-center transition-all hover:bg-[#9b5d58] hover:text-white hover:scale-105"
+              aria-label="Next result"
+            >
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0 sm:px-10">
+            {rotatedResults.map((item, index) => {
+              const isActive = index === 0;
+              const originalIndex = BEFORE_AFTER_RESULTS.findIndex((result) => result.id === item.id);
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  data-aos="fade-up"
+                  data-aos-delay={originalIndex * 100}
+                  onClick={() => setActiveResultIndex(originalIndex)}
+                  className="text-left focus:outline-none"
+                  aria-label={`Show ${item.treatmentName} result`}
+                >
+                  <div
+                    className={`bg-white rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between h-full ${
+                      isActive
+                        ? 'border-[#9b5d58] shadow-xl ring-1 ring-[#9b5d58]/20'
+                        : 'border-[#f1e5e0] hover:border-[#c7b3ad] shadow-sm'
+                    }`}
+                  >
+                    {/* Before / After Images */}
+                    <div className="space-y-3">
+                      <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#f2e2dc] grid grid-cols-2 gap-1 p-1 bg-[#f1e5e0]">
+                        <div className="relative rounded-lg overflow-hidden h-full">
+                          <img
+                            src={item.beforeImage}
+                            alt={`${item.treatmentName} Before`}
+                            className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                            BEFORE
+                          </span>
+                        </div>
+
+                        <div className="relative rounded-lg overflow-hidden h-full">
+                          <img
+                            src={item.afterImage}
+                            alt={`${item.treatmentName} After`}
+                            className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          <span className="absolute bottom-2 right-2 bg-[#9b5d58] text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                            AFTER
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-[10px] font-sans-clean font-semibold tracking-wider text-[#a18f8b] uppercase">
+                          {item.category}
+                        </span>
+                        <h3 className="font-serif-luxury text-xl font-medium text-[#3c2b2a]">
+                          {item.treatmentName}
+                        </h3>
+                        <p className="text-xs font-sans-clean text-[#7b6966] mt-1 font-light leading-relaxed">
+                          {item.details}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* After Half */}
-                    <div className="relative rounded-lg overflow-hidden h-full">
-                      <img
-                        src={item.afterImage}
-                        alt={`${item.treatmentName} After`}
-                        className="w-full h-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                      <span className="absolute bottom-2 right-2 bg-[#9b5d58] text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
-                        AFTER
-                      </span>
+                    <div className="pt-4 mt-4 border-t border-[#eadad5] flex items-center justify-between text-[11px] font-sans-clean text-[#a18f8b]">
+                      <span>{item.sessionCount}</span>
+                      <span className="font-medium text-[#9b5d58]">{item.timeframe}</span>
                     </div>
                   </div>
-
-                  <div>
-                    <span className="text-[10px] font-sans-clean font-semibold tracking-wider text-[#a18f8b] uppercase">
-                      {item.category}
-                    </span>
-                    <h3 className="font-serif-luxury text-xl font-medium text-[#3c2b2a]">
-                      {item.treatmentName}
-                    </h3>
-                    <p className="text-xs font-sans-clean text-[#7b6966] mt-1 font-light leading-relaxed">
-                      {item.details}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-[#eadad5] flex items-center justify-between text-[11px] font-sans-clean text-[#a18f8b]">
-                  <span>{item.sessionCount}</span>
-                  <span className="font-medium text-[#9b5d58]">{item.timeframe}</span>
-                </div>
-              </div>
-            );
-          })}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Interactive Comparison Focus Box for Active Selection */}
@@ -220,4 +248,3 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
     </section>
   );
 };
-
