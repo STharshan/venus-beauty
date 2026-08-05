@@ -42,7 +42,7 @@ export const Header: React.FC<HeaderProps> = ({ onBookClick }) => {
           <img
             src={logo}
             alt="Venus Beauty Aesthetics logo"
-            className="w-15 h-15 rounded-full object-cover shadow-sm ring-1 ring-black/5 group-hover:scale-[1.02] transition-transform"
+            className="w-14 h-14 rounded-full object-cover shadow-sm ring-1 ring-black/5 group-hover:scale-[1.02] transition-transform"
           />
         </a>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Phone, Mail, MapPin, Instagram, Facebook } from 'lucide-react';
 import logo from '../assets/images/logo.png';
 
@@ -152,4 +152,3 @@ export const Footer: React.FC<FooterProps> = ({
     </footer>
   );
 };
-
