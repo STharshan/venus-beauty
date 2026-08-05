@@ -11,10 +11,6 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
   const [sliderPosition, setSliderPosition] = useState(50); // percentage 0-100
 
   const currentResult = BEFORE_AFTER_RESULTS[activeResultIndex];
-  const rotatedResults = [
-    ...BEFORE_AFTER_RESULTS.slice(activeResultIndex),
-    ...BEFORE_AFTER_RESULTS.slice(0, activeResultIndex),
-  ];
 
   const handleNext = () => {
     setActiveResultIndex((prev) => (prev + 1) % BEFORE_AFTER_RESULTS.length);
@@ -68,8 +64,8 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
           </div>
         </div>
 
-        {/* Results Cards */}
-        <div className="relative mb-12" data-aos="fade-up">
+        {/* Mobile Result Carousel */}
+        <div className="relative mb-12 lg:hidden" data-aos="fade-up">
           <div className="absolute inset-y-1/2 left-0 right-0 -translate-y-1/2 flex items-center justify-between pointer-events-none z-20 px-0 sm:px-2">
             <button
               onClick={handlePrev}
@@ -88,77 +84,132 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-0 sm:px-10">
-            {rotatedResults.map((item, index) => {
-              const isActive = index === 0;
-              const originalIndex = BEFORE_AFTER_RESULTS.findIndex((result) => result.id === item.id);
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  data-aos="fade-up"
-                  data-aos-delay={originalIndex * 100}
-                  onClick={() => setActiveResultIndex(originalIndex)}
-                  className="text-left focus:outline-none"
-                  aria-label={`Show ${item.treatmentName} result`}
-                >
-                  <div
-                    className={`bg-white rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between h-full ${
-                      isActive
-                        ? 'border-[#9b5d58] shadow-xl ring-1 ring-[#9b5d58]/20'
-                        : 'border-[#f1e5e0] hover:border-[#c7b3ad] shadow-sm'
-                    }`}
-                  >
-                    {/* Before / After Images */}
-                    <div className="space-y-3">
-                      <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#f2e2dc] grid grid-cols-2 gap-1 p-1 bg-[#f1e5e0]">
-                        <div className="relative rounded-lg overflow-hidden h-full">
-                          <img
-                            src={item.beforeImage}
-                            alt={`${item.treatmentName} Before`}
-                            className="w-full h-full object-cover"
-                            referrerPolicy="no-referrer"
-                          />
-                          <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
-                            BEFORE
-                          </span>
-                        </div>
-
-                        <div className="relative rounded-lg overflow-hidden h-full">
-                          <img
-                            src={item.afterImage}
-                            alt={`${item.treatmentName} After`}
-                            className="w-full h-full object-cover"
-                            referrerPolicy="no-referrer"
-                          />
-                          <span className="absolute bottom-2 right-2 bg-[#9b5d58] text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
-                            AFTER
-                          </span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <span className="text-[10px] font-sans-clean font-semibold tracking-wider text-[#a18f8b] uppercase">
-                          {item.category}
-                        </span>
-                        <h3 className="font-serif-luxury text-xl font-medium text-[#3c2b2a]">
-                          {item.treatmentName}
-                        </h3>
-                        <p className="text-xs font-sans-clean text-[#7b6966] mt-1 font-light leading-relaxed">
-                          {item.details}
-                        </p>
-                      </div>
+          <div className="px-0 sm:px-10">
+            <button
+              type="button"
+              onClick={() => setActiveResultIndex(activeResultIndex)}
+              className="w-full text-left focus:outline-none"
+              aria-label={`Show ${currentResult.treatmentName} result`}
+            >
+              <div className="bg-white rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between h-full border-[#9b5d58] shadow-xl ring-1 ring-[#9b5d58]/20">
+                <div className="space-y-3">
+                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#f2e2dc] grid grid-cols-2 gap-1 p-1 bg-[#f1e5e0]">
+                    <div className="relative rounded-lg overflow-hidden h-full">
+                      <img
+                        src={currentResult.beforeImage}
+                        alt={`${currentResult.treatmentName} Before`}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                        BEFORE
+                      </span>
                     </div>
 
-                    <div className="pt-4 mt-4 border-t border-[#eadad5] flex items-center justify-between text-[11px] font-sans-clean text-[#a18f8b]">
-                      <span>{item.sessionCount}</span>
-                      <span className="font-medium text-[#9b5d58]">{item.timeframe}</span>
+                    <div className="relative rounded-lg overflow-hidden h-full">
+                      <img
+                        src={currentResult.afterImage}
+                        alt={`${currentResult.treatmentName} After`}
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      <span className="absolute bottom-2 right-2 bg-[#9b5d58] text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                        AFTER
+                      </span>
                     </div>
                   </div>
-                </button>
-              );
-            })}
+
+                  <div>
+                    <span className="text-[10px] font-sans-clean font-semibold tracking-wider text-[#a18f8b] uppercase">
+                      {currentResult.category}
+                    </span>
+                    <h3 className="font-serif-luxury text-xl font-medium text-[#3c2b2a]">
+                      {currentResult.treatmentName}
+                    </h3>
+                    <p className="text-xs font-sans-clean text-[#7b6966] mt-1 font-light leading-relaxed">
+                      {currentResult.details}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-4 mt-4 border-t border-[#eadad5] flex items-center justify-between text-[11px] font-sans-clean text-[#a18f8b]">
+                  <span>{currentResult.sessionCount}</span>
+                  <span className="font-medium text-[#9b5d58]">{currentResult.timeframe}</span>
+                </div>
+              </div>
+            </button>
           </div>
+        </div>
+
+        {/* Desktop Results Cards */}
+        <div className="hidden lg:grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12" data-aos="fade-up">
+          {BEFORE_AFTER_RESULTS.map((item, index) => {
+            const isActive = index === activeResultIndex;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                data-aos="fade-up"
+                data-aos-delay={index * 100}
+                onClick={() => setActiveResultIndex(index)}
+                className="text-left focus:outline-none"
+                aria-label={`Show ${item.treatmentName} result`}
+              >
+                <div
+                  className={`bg-white rounded-2xl p-5 border transition-all duration-300 flex flex-col justify-between h-full ${
+                    isActive
+                      ? 'border-[#9b5d58] shadow-xl ring-1 ring-[#9b5d58]/20'
+                      : 'border-[#f1e5e0] hover:border-[#c7b3ad] shadow-sm'
+                  }`}
+                >
+                  <div className="space-y-3">
+                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-[#f2e2dc] grid grid-cols-2 gap-1 p-1 bg-[#f1e5e0]">
+                      <div className="relative rounded-lg overflow-hidden h-full">
+                        <img
+                          src={item.beforeImage}
+                          alt={`${item.treatmentName} Before`}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <span className="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                          BEFORE
+                        </span>
+                      </div>
+
+                      <div className="relative rounded-lg overflow-hidden h-full">
+                        <img
+                          src={item.afterImage}
+                          alt={`${item.treatmentName} After`}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                        <span className="absolute bottom-2 right-2 bg-[#9b5d58] text-white text-[9px] font-sans-clean uppercase tracking-wider px-2 py-0.5 rounded-md backdrop-blur-xs">
+                          AFTER
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <span className="text-[10px] font-sans-clean font-semibold tracking-wider text-[#a18f8b] uppercase">
+                        {item.category}
+                      </span>
+                      <h3 className="font-serif-luxury text-xl font-medium text-[#3c2b2a]">
+                        {item.treatmentName}
+                      </h3>
+                      <p className="text-xs font-sans-clean text-[#7b6966] mt-1 font-light leading-relaxed">
+                        {item.details}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-[#eadad5] flex items-center justify-between text-[11px] font-sans-clean text-[#a18f8b]">
+                    <span>{item.sessionCount}</span>
+                    <span className="font-medium text-[#9b5d58]">{item.timeframe}</span>
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {/* Interactive Comparison Focus Box for Active Selection */}
