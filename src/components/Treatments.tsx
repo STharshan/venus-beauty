@@ -102,7 +102,7 @@ export const Treatments: React.FC<TreatmentsProps> = ({
                   <h3 className="font-serif-luxury text-lg font-medium text-[#3c2b2a] leading-snug group-hover:text-[#9b5d58] transition-colors">
                     {treatment.title}
                   </h3>
-                  <p className="text-[11px] font-sans-clean text-[#7f6d6a] mt-1.5 leading-snug line-clamp-3">
+                  <p className="text-[13px] font-sans-clean text-[#7f6d6a] mt-1.5 leading-snug line-clamp-3">
                     {treatment.shortDescription}
                   </p>
                 </div>

@@ -99,7 +99,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <h3 className="font-serif-luxury text-lg font-medium text-[#3c2b2a] leading-tight">
                   Injectables
                 </h3>
-                <p className="text-[11px] font-sans-clean text-[#7f6d6a] mt-1 leading-snug">
+                <p className="text-[13px] font-sans-clean text-[#7f6d6a] mt-1 leading-snug">
                   Anti-wrinkle, dermal fillers & lip enhancement.
                 </p>
                 <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-sans-clean font-semibold tracking-wider text-[#9b5d58] group-hover:text-[#3c2b2a] uppercase">
@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <h3 className="font-serif-luxury text-lg font-medium text-[#3c2b2a] leading-tight">
                   Skin Rejuvenation
                 </h3>
-                <p className="text-[11px] font-sans-clean text-[#7f6d6a] mt-1 leading-snug">
+                <p className="text-[13px] font-sans-clean text-[#7f6d6a] mt-1 leading-snug">
                   Advanced skin treatments for a healthy glow.
                 </p>
                 <div className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-sans-clean font-semibold tracking-wider text-[#9b5d58] group-hover:text-[#3c2b2a] uppercase">

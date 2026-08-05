@@ -136,8 +136,9 @@ export const Footer: React.FC<FooterProps> = ({
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] font-sans-clean text-[#a18f8b] gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-sm font-sans-clean text-[#a18f8b] gap-4">
           <p>© 2026 Venus Beauty Aesthetics. All rights reserved.</p>
+          <p>Powered by <a href="https://ansely.co.uk/" target="_blank" rel="noopener noreferrer" className="hover:text-[#3c2b2a] transition-colors"><span className="hover:underline">Ansely</span></a></p>
           <div className="flex items-center space-x-6">
             <button onClick={onOpenPrivacyPolicy} className="hover:text-[#3c2b2a] transition-colors">
               Privacy Policy

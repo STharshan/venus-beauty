@@ -59,13 +59,6 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({ onStartJourneyClick }) =
                   {step.description}
                 </p>
               </div>
-
-              {/* Connecting Arrow for desktop (except last item) */}
-              {idx < STEP_PROCESS.length - 1 && (
-                <div className="hidden lg:block absolute -right-4 top-12 z-10 text-[#a3a79a]">
-                  <ArrowRight className="w-5 h-5" />
-                </div>
-              )}
             </div>
           ))}
         </div>

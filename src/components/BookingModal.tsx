@@ -16,11 +16,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   preselectedTreatment,
   initialConcern,
 }) => {
+  const whatsappNumber = '447792584920';
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedTreatmentId, setSelectedTreatmentId] = useState<string>(
     preselectedTreatment?.id || 'consultation-general'
   );
-  const [selectedDate, setSelectedDate] = useState<string>('2026-08-10');
+  const today = new Date();
+  const minDate = today.toISOString().split('T')[0];
+  const [selectedDate, setSelectedDate] = useState<string>(minDate);
   const [selectedTime, setSelectedTime] = useState<string>('10:30 AM');
   const [formData, setFormData] = useState({
     fullName: '',
@@ -28,6 +31,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     phone: '',
     notes: initialConcern ? `Primary skin concern: ${initialConcern}` : '',
   });
+  const [errors, setErrors] = useState<Partial<Record<'fullName' | 'email' | 'phone' | 'date' | 'time', string>>>({});
   const [bookingRef, setBookingRef] = useState('');
 
   if (!isOpen) return null;
@@ -37,10 +41,72 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     '01:30 PM', '03:00 PM', '04:30 PM', '05:45 PM'
   ];
 
+  const validateStep3 = () => {
+    const nextErrors: Partial<Record<'fullName' | 'email' | 'phone' | 'date' | 'time', string>> = {};
+
+    if (!formData.fullName.trim()) {
+      nextErrors.fullName = 'Please enter your full name.';
+    }
+
+    if (!formData.email.trim()) {
+      nextErrors.email = 'Please enter your email address.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      nextErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (!formData.phone.trim()) {
+      nextErrors.phone = 'Please enter your phone number.';
+    } else if (!/^[0-9+()\-\s]{7,}$/.test(formData.phone.trim())) {
+      nextErrors.phone = 'Please enter a valid phone number.';
+    }
+
+    if (!selectedDate) {
+      nextErrors.date = 'Please choose a date.';
+    } else if (selectedDate < minDate) {
+      nextErrors.date = 'Please choose today or a future date.';
+    }
+
+    if (!selectedTime) {
+      nextErrors.time = 'Please choose a time slot.';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const buildWhatsappMessage = () => {
+    const treatmentText = currentTreatment ? `${currentTreatment.title} (${currentTreatment.price})` : 'General Aesthetic Skin Consultation';
+    const lines = [
+      'Hello Venus Beauty Aesthetics, I would like to book a consultation.',
+      '',
+      `Treatment: ${treatmentText}`,
+      `Date: ${selectedDate}`,
+      `Time: ${selectedTime}`,
+      `Name: ${formData.fullName.trim()}`,
+      `Email: ${formData.email.trim()}`,
+      `Phone: ${formData.phone.trim()}`,
+      formData.notes.trim() ? `Notes: ${formData.notes.trim()}` : '',
+      '',
+    ].filter(Boolean);
+
+    return lines.join('\n');
+  };
+
+  const openWhatsapp = () => {
+    const message = buildWhatsappMessage();
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateStep3()) {
+      return;
+    }
+
     const randomRef = 'VBA-' + Math.floor(100000 + Math.random() * 900000);
     setBookingRef(randomRef);
+    openWhatsapp();
     setStep(4);
   };
 
@@ -156,7 +222,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <div className="pt-4 border-t border-[#eadad5] flex justify-end">
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => {
+                    if (selectedTreatmentId) {
+                      setStep(2);
+                    }
+                  }}
                   className="inline-flex items-center gap-2 bg-[#9b5d58] hover:bg-[#7f4d49] text-white px-6 py-3 rounded-full text-xs font-sans-clean font-medium tracking-wider uppercase transition-all shadow-sm"
                 >
                   <span>NEXT: CHOOSE TIME</span>
@@ -180,10 +250,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <input
                   type="date"
                   value={selectedDate}
-                  min="2026-08-05"
+                  min={minDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
+                  onBlur={() => {
+                    if (selectedDate && selectedDate < minDate) {
+                      setErrors((prev) => ({ ...prev, date: 'Please choose today or a future date.' }));
+                    } else {
+                      setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.date;
+                        return next;
+                      });
+                    }
+                  }}
                   className="w-full p-3 rounded-xl border border-[#e7d3cd] focus:outline-none focus:border-[#9b5d58] text-sm font-sans-clean"
                 />
+                {errors.date && <p className="text-xs text-[#b4534f]">{errors.date}</p>}
               </div>
 
               <div className="space-y-3">
@@ -206,6 +288,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     </button>
                   ))}
                 </div>
+                {errors.time && <p className="text-xs text-[#b4534f]">{errors.time}</p>}
               </div>
 
               <div className="pt-4 border-t border-[#eadad5] flex justify-between">
@@ -242,10 +325,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     type="text"
                     required
                     value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    onChange={(e) => {
+                      setFormData({ ...formData, fullName: e.target.value });
+                      if (errors.fullName) setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.fullName;
+                        return next;
+                      });
+                    }}
                     placeholder="e.g. Eleanor Vance"
+                    aria-invalid={Boolean(errors.fullName)}
                     className="w-full p-3 rounded-xl border border-[#e7d3cd] focus:outline-none focus:border-[#9b5d58] text-sm font-sans-clean"
                   />
+                  {errors.fullName && <p className="mt-1 text-xs text-[#b4534f]">{errors.fullName}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -254,13 +346,22 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       Email Address *
                     </label>
                     <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="eleanor@example.com"
-                      className="w-full p-3 rounded-xl border border-[#e7d3cd] focus:outline-none focus:border-[#9b5d58] text-sm font-sans-clean"
-                    />
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => {
+                      setFormData({ ...formData, email: e.target.value });
+                      if (errors.email) setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.email;
+                        return next;
+                      });
+                    }}
+                    placeholder="eleanor@example.com"
+                    aria-invalid={Boolean(errors.email)}
+                    className="w-full p-3 rounded-xl border border-[#e7d3cd] focus:outline-none focus:border-[#9b5d58] text-sm font-sans-clean"
+                  />
+                    {errors.email && <p className="mt-1 text-xs text-[#b4534f]">{errors.email}</p>}
                   </div>
                   <div>
                     <label className="block text-[11px] font-sans-clean font-medium text-[#9b5d58] uppercase mb-1">
@@ -270,10 +371,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                       type="tel"
                       required
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => {
+                        setFormData({ ...formData, phone: e.target.value });
+                        if (errors.phone) setErrors((prev) => {
+                          const next = { ...prev };
+                          delete next.phone;
+                          return next;
+                        });
+                      }}
                       placeholder="07123 456789"
+                      aria-invalid={Boolean(errors.phone)}
                       className="w-full p-3 rounded-xl border border-[#e7d3cd] focus:outline-none focus:border-[#9b5d58] text-sm font-sans-clean"
                     />
+                    {errors.phone && <p className="mt-1 text-xs text-[#b4534f]">{errors.phone}</p>}
                   </div>
                 </div>
 
@@ -303,7 +413,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   type="submit"
                   className="inline-flex items-center gap-2 bg-[#9b5d58] hover:bg-[#7f4d49] text-white px-7 py-3.5 rounded-full text-xs font-sans-clean font-medium tracking-wider uppercase transition-all shadow-md"
                 >
-                  <span>CONFIRM APPOINTMENT</span>
+                  <span>CONFIRM ON WHATSAPP</span>
                   <CheckCircle2 className="w-4 h-4" />
                 </button>
               </div>
@@ -322,10 +432,10 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   BOOKING REFERENCE: {bookingRef}
                 </span>
                 <h3 className="font-serif-luxury text-3xl font-medium text-[#3c2b2a]">
-                  We look forward to welcoming you!
+                  We sent your details to WhatsApp
                 </h3>
                 <p className="text-xs font-sans-clean text-[#7b6966] mt-2 max-w-sm mx-auto leading-relaxed">
-                  A confirmation email has been sent to <strong>{formData.email}</strong> with appointment instructions and directions to our London clinic.
+                  WhatsApp will open with a prefilled booking message for <strong>+44 7792 584920</strong>. Please send it to complete your request.
                 </p>
               </div>
 
@@ -347,7 +457,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               </div>
 
               <button
-                onClick={onClose}
+                onClick={() => {
+                  onClose();
+                  setStep(1);
+                  setErrors({});
+                }}
                 className="bg-[#9b5d58] text-white px-8 py-3 rounded-full text-xs font-sans-clean font-medium tracking-wider uppercase transition-all shadow-sm"
               >
                 RETURN TO WEBSITE

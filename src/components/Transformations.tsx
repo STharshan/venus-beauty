@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, SlidersHorizontal, Check } from 'lucide-react';
 import { BEFORE_AFTER_RESULTS } from '../data/clinicData';
-import { BeforeAfterResult } from '../types';
 
 interface TransformationsProps {
   onBookClick: () => void;
@@ -204,7 +203,7 @@ export const Transformations: React.FC<TransformationsProps> = ({ onBookClick })
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-            <p className="text-xs font-sans-clean text-[#7f6d6a] max-w-xl">
+            <p className="text-sm font-sans-clean text-[#7f6d6a] max-w-xl">
               All results depicted are achieved directly at Venus Beauty Aesthetics. Individual results may vary based on skin condition and treatment plan.
             </p>
             <button

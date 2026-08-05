@@ -4,6 +4,9 @@ import heroModelImg from '../assets/images/hero_model_treatment_1785863788586.jp
 import clinicInteriorImg from '../assets/images/clinic_interior_main_1785863802612.jpg';
 import leafBannerImg from '../assets/images/botanical_leaf_banner_1785863817598.jpg';
 import lip from "../assets/images/lip.png"
+import lipbefore from "../assets/images/lip_before.png"
+import lipafter from "../assets/images/lip_after.png"
+
 
 export const HERO_MODEL_IMAGE = heroModelImg;
 export const CLINIC_INTERIOR_IMAGE = clinicInteriorImg;
@@ -223,8 +226,8 @@ export const BEFORE_AFTER_RESULTS: BeforeAfterResult[] = [
     id: 'result-lip',
     treatmentName: 'Lip Enhancement',
     category: 'Injectables',
-    beforeImage: 'https://images.unsplash.com/photo-1588516903720-8ceb67f9ef84?auto=format&fit=crop&q=80&w=500',
-    afterImage: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=500',
+    beforeImage: lipbefore,
+    afterImage: lipafter,
     details: '0.7ml premium HA dermal filler applied focusing on vermilion definition and subtle volume balance.',
     sessionCount: '1 Session',
     timeframe: 'Immediate Result'
